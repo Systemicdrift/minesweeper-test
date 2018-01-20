@@ -100,6 +100,10 @@ function checkTile(element) {
         nodes.push(index);
         while(nodes.length) {
             let node = nodes.pop();
+            if(config.boardMeta[node]) {
+                reveal.push(node);
+                break;
+            }
             let curIndex = node;
             for(let x=-1; x < 2; x++) {
                 for(let y=-1; y < 2; y++) {
