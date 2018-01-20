@@ -1,0 +1,45 @@
+<html>
+<head>
+    <title>Minesweeper test</title>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/minesweeper.js"></script>
+    <style>
+        #tile, .tile
+        {
+            /* display: none; */
+            height: 50px;
+            width: 50px;
+            border: 1px solid black;
+        }
+        .closed {
+            background-color: gray;
+        }
+        .closed span {
+            /* display: none; */
+            background-color: blue;
+        }
+        .open {
+            background-color: yellow;
+        }
+        .open span {
+            display: block;
+            background-color: red;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #board {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="board">
+    </div>
+    <br><br>
+    <button onclick="reset()">Restart</button>
+</body>
+</html>
