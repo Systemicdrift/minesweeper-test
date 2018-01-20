@@ -22,7 +22,7 @@ function buildBoard($, config) {
         tile.data('index', i);
         tile.data('val', boardMeta[i]);
         if(boardMeta[i] == "B") {
-            tile.html('<span>'+ boardMeta[i] +'</span>');
+            tile.html('<span>'+ i + ': '+ boardMeta[i] +'</span>');
         } else {
             tile.html(boardMeta[i]);
         }
@@ -47,20 +47,31 @@ function generateBoard(num, bombs) {
     }
     for(let j = 0; j < tiles.length; j++) {
         let count = 0;
+        let other = "";
         for(let x=-1; x < 2; x++) {
             for(let y=-1; y < 2; y++) {
-                if(x == 0 && y == 0) {
+                let pos = j + (x * config.startX + y);
+                if((x == 0 && y == 0)
+                    || pos < 0
+                    || pos > tiles.length
+                    || ((j + 1) % config.startX == 0 && y > 0)
+                    || ((j) % config.startX == 0 && y < 0)
+                )
+                {
                     continue;
                 }
-                let pos = x * config.startX + y;
-                let item = tiles[j + pos];
+                
+                let item = tiles[pos];
                 if(item == "B") {
                     count++;
+                    other = ' ** ' + item + ' ' +pos;
+                    console.log('other *********', other)
                 }
+                
             }
         }
         if(tiles[j] != "B") {
-            tiles[j] = count;
+            tiles[j] += j + ':' + count + other;
         }
     }
     return tiles;
@@ -126,7 +137,7 @@ $(document).ready(function() {
     config.startX = 5;
     config.startY = 5;
     config.bombs = 5;
-    config.tileWidth = 52;
+    config.tileWidth = 102;
     config.tileTpl = '<div class="closed tile" onclick="checkTile(this)"></div>';
     buildBoard($, config);
 });
