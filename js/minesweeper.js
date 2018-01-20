@@ -20,6 +20,8 @@ function buildBoard($, config) {
     for(let i = 0; i < numTiles; i++) {
         let tile = $(config.tileTpl);
         tile.data('index', i);
+        tile.attr('name', i);
+        console.log('***** index: ', tile)
         tile.data('val', boardMeta[i]);
         if(boardMeta[i] == "B") {
             tile.html('<span>'+ i + ': '+ boardMeta[i] +'</span>');
@@ -84,9 +86,10 @@ function checkTile(element) {
     let index = el.data('index');
     let tile = config.boardMeta[index];
     let nodes = [];
-    let neighbors = [];
+    let visited = [];
+    let reveal = [];
 
-    console.log('index, tile: ', index, tile)
+    console.log('index, tile: ', index, $(element).data('index'))
 
     if(tile == "B") {
         //$(".tile > span").parent().removeClass('closed').addClass('open');
@@ -95,25 +98,37 @@ function checkTile(element) {
         lostState = true;
     } else {
         nodes.push(index);
-        // ran out of time working on this....
-        // while(nodes.length) {
-        //     let node = nodes.pop();
-        //     for(let x=-1; x < 2; x++) {
-        //         for(let y=-1; y < 2; y++) {
-        //             if(x == 0 && y == 0) {
-        //                 let elem = $("div[data-index=" + node +"]");
-        //                 toggleTile(elem);
-        //                 continue;
-        //             }
-        //             let pos = x * config.startX + y;
-        //             let item = config.boardMeta[index + pos];
-        //             if(item == 0) {
-        //                 nodes.push(item);
-        //             }
-        //         }
-        //     }
-        // }
-        toggleTile(el, tile);
+        while(nodes.length) {
+            let node = nodes.pop();
+            let curIndex = node;
+            for(let x=-1; x < 2; x++) {
+                for(let y=-1; y < 2; y++) {
+                    let pos = curIndex + (x * config.startX + y);
+                    if(pos > config.boardMeta.length
+                        || ((curIndex + 1) % config.startX == 0 && y > 0)
+                        || ((curIndex) % config.startX == 0 && y < 0)
+                    ) {
+                        continue;
+                    }
+                    let item = config.boardMeta[pos];
+                    if(item == 0 && visited.indexOf(pos) < 0) {
+                        reveal.push(pos);
+                        nodes.push(pos);
+                    } else if(item != "B" && visited.indexOf(pos) < 0) {
+                        console.log('pushing reveal', item)
+                        reveal.push(pos);
+                    }
+                    visited.push(pos);
+                }
+            }
+        }
+        console.log('reveal ', reveal)
+        reveal.forEach((node)=>{
+            let elem = $("div[name=" + node +"]");
+            toggleTile(elem);
+        })
+        
+        //toggleTile(el, tile);
     }
 }
 
