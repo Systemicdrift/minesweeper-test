@@ -64,14 +64,12 @@ function generateBoard(num, bombs) {
                 let item = tiles[pos];
                 if(item == "B") {
                     count++;
-                    other = ' ** ' + item + ' ' +pos;
-                    console.log('other *********', other)
                 }
                 
             }
         }
         if(tiles[j] != "B") {
-            tiles[j] += j + ':' + count + other;
+            tiles[j] = count;
         }
     }
     return tiles;
